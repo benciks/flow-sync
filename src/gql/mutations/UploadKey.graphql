@@ -1,0 +1,3 @@
+mutation uploadKey($key: String!) {
+  uploadTimeWarriorKey(key: $key)
+}

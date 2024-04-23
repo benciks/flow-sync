@@ -1,0 +1,63 @@
+"""
+The @defer directive may be specified on a fragment spread to imply de-prioritization, that causes the fragment to be omitted in the initial response, and delivered as a subsequent response afterward. A query with @defer directive will cause the request to potentially return multiple responses, where non-deferred data is delivered in the initial response and data deferred delivered in a subsequent response. @include and @skip take precedence over @defer.
+"""
+directive @defer(if: Boolean = true, label: String) on FRAGMENT_SPREAD | INLINE_FRAGMENT
+
+scalar File
+
+type Mutation {
+  createTask(description: String!, due: String, priority: String, project: String): Task!
+  deleteTimeRecord(id: ID!): TimeRecord!
+  downloadTaskKeys: String!
+  modifyTimeRecordDate(end: String, id: ID!, start: String): TimeRecord!
+  signIn(password: String!, username: String!): SignInPayload!
+  signOut: Boolean!
+  signUp(password: String!, username: String!): SignInPayload!
+  tagTimeRecord(id: ID!, tag: String!): TimeRecord!
+  timeStart: TimeRecord!
+  timeStop: TimeRecord!
+  untagTimeRecord(id: ID!, tag: String!): TimeRecord!
+  uploadTimeWarriorKey(key: String!): Boolean!
+}
+
+type Query {
+  me: User!
+  tasks: [Task!]!
+  timeRecords: [TimeRecord!]!
+  timeTags: [String!]!
+}
+
+type SignInPayload {
+  token: String!
+  user: User!
+}
+
+type Task {
+  description: String!
+  due: String!
+  entry: String!
+  id: ID!
+  modified: String!
+  priority: String!
+  project: String!
+  status: String!
+  tags: [String!]!
+  urgency: Float!
+  uuid: String!
+}
+
+scalar Time
+
+type TimeRecord {
+  end: String!
+  id: ID!
+  start: String!
+  tags: [String!]!
+}
+
+type User {
+  createdAt: Time!
+  id: ID!
+  password: String!
+  username: String!
+}

@@ -1,0 +1,30 @@
+schema: http://localhost:3000/query
+documents: src/gql/**/*.graphql
+watch: true
+config:
+  scalars:
+    Long: number
+  defaultScalarType: never
+  useTypeImports: true
+generates:
+  gql/schema.ts:
+    plugins:
+      - typescript
+      - typescript-urql-graphcache
+  gql/:
+    preset: near-operation-file
+    presetConfig:
+      baseTypesPath: schema.ts
+      extension: .ts
+    config:
+      preResolveTypes: false
+    plugins:
+      - typescript-operations
+      #- typed-document-node
+      - typescript-vue-urql
+  gql/introspection.ts:
+    plugins:
+      - urql-introspection
+  gql/schema.graphql:
+    plugins:
+      - schema-ast
