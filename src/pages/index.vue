@@ -9,15 +9,15 @@
       </div>
 
         <div class="mt-8">
-          <div class="font-semibold">Taskwarrior keys</div >
-          <div class="text-sm text-gray-600 max-w-sm">To setup a sync on your machine, you need to download following keys:</div>
+          <div class="font-semibold">Taskd Certificate</div >
+          <div class="text-sm text-gray-600 max-w-sm">In order to setup a sync on your machine, you need to download the CA certificate of the taskd server. This certificate is used to verify the identity of the server and ensure that the connection is secure.</div>
 
           <button @click="downloadTaskwarriorKeys" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded">Download</button>
         </div>
 
         <div class="mt-8">
           <div class="font-semibold">Add timewarrior key</div>
-          <div class="text-sm text-gray-600 max-w-sm">Insert your timewarrior key below to add it to your account, after that you can start syncing your tasks</div>
+          <div class="text-sm text-gray-600 max-w-sm">Insert your timewarrior key below to add it to your account, after that you can start syncing your tasks using <a href="https://github.com/timewarrior-synchronize/timew-sync-client" class="text-blue-500 underline">timew-sync-client</a></div>
           <textarea class="w-full mt-2 h-24 bg-gray-200 rounded-lg p-4 text-sm" placeholder="Paste your public key here" v-model="timewarriorKey">
           </textarea>
           <button @click="uploadKey" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded">Add</button>
@@ -58,7 +58,7 @@ const downloadTaskwarriorKeys = async () => {
     // Create a link to download the file
     const link = document.createElement('a');
     link.href = URL.createObjectURL(blob);
-    link.download = 'flow_sync_taskd.zip';
+    link.download = 'flow_taskd_ca.zip';
     link.click();
   }
 }
