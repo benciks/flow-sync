@@ -9,8 +9,8 @@
       </div>
 
         <div class="mt-8">
-          <div class="font-semibold">Taskd Certificate</div >
-          <div class="text-sm text-gray-600 max-w-sm">In order to setup a sync on your machine, you need to download the CA certificate of the taskd server. This certificate is used to verify the identity of the server and ensure that the connection is secure.</div>
+          <div class="font-semibold">Taskd Keys</div >
+          <div class="text-sm text-gray-600 max-w-sm">In order to setup a sync on your machine, you need to download following certificates and keys that were generated for you by the taskd server. These certificates are used to verify the identity of the server and ensure that the connection is secure.</div>
 
           <button @click="downloadTaskwarriorKeys" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded">Download</button>
         </div>
