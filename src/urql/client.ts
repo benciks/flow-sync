@@ -61,10 +61,7 @@ function makeClient() {
           async refreshAuth() {
             const route = router.currentRoute.value
             if (!route) return
-            if (!publicRoutes.includes(route.name as string)) {
-              localStorage.removeItem("language")
-              localStorage.removeItem("active_app")
-              localStorage.removeItem("enabled_apps")
+            if (route.name !== "login") {
               localStorage.removeItem("authorization")
 
               await router.push({ name: "/login" })
