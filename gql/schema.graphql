@@ -7,12 +7,18 @@ scalar File
 
 type Mutation {
   createTask(description: String!, due: String, priority: String, project: String): Task!
+  deleteTask(id: ID!): Task!
   deleteTimeRecord(id: ID!): TimeRecord!
   downloadTaskKeys: String!
+  editTask(depends: [String], description: String, due: String, id: ID!, priority: String, project: String, recurring: String, tags: [String], until: String): Task!
+  markTaskDone(id: ID!): Task!
   modifyTimeRecordDate(end: String, id: ID!, start: String): TimeRecord!
+  setTimewHook(enabled: Boolean!): Boolean!
   signIn(password: String!, username: String!): SignInPayload!
   signOut: Boolean!
   signUp(password: String!, username: String!): SignInPayload!
+  startTask(id: ID!): Task!
+  stopTask(id: ID!): Task!
   tagTimeRecord(id: ID!, tag: String!): TimeRecord!
   timeStart: TimeRecord!
   timeStop: TimeRecord!
@@ -22,7 +28,9 @@ type Mutation {
 
 type Query {
   me: User!
-  tasks: [Task!]!
+  recentTaskProjects: [String!]!
+  recentTaskTags: [String!]!
+  tasks(filter: TaskFilter): [Task!]!
   timeRecords: [TimeRecord!]!
   timeTags: [String!]!
 }
@@ -33,17 +41,31 @@ type SignInPayload {
 }
 
 type Task {
+  depends: [String!]!
   description: String!
   due: String!
   entry: String!
   id: ID!
   modified: String!
+  parent: String
   priority: String!
   project: String!
+  recur: String
+  start: String
   status: String!
   tags: [String!]!
+  until: String
   urgency: Float!
   uuid: String!
+}
+
+input TaskFilter {
+  description: String
+  due: String
+  priority: String
+  project: String
+  status: String
+  tags: [String!]
 }
 
 scalar Time
@@ -56,8 +78,10 @@ type TimeRecord {
 }
 
 type User {
-  createdAt: Time!
   id: ID!
   password: String!
+  taskdUuid: String!
+  timewHook: Boolean!
+  timewId: String!
   username: String!
 }

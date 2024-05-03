@@ -12,6 +12,16 @@
           <div class="font-semibold">Taskd Keys</div >
           <div class="text-sm text-gray-600 max-w-sm">In order to setup a sync on your machine, you need to download following certificates and keys that were generated for you by the taskd server. These certificates are used to verify the identity of the server and ensure that the connection is secure.</div>
 
+          <div class="mt-10 text-sm text-gray-600">Use following config in your taskwarrior client:</div>
+          <xmp class="mt-2 text-sm text-gray-600 bg-gray-200 rounded-lg p-4 max-w-xl overflow-x-auto">
+            task config taskd.server -- benciks.me:53589 <br>
+            task config taskd.credentials  -- <span class="font-bold">Public/{{ me?.me?.username }}/{{ me?.me?.taskdUuid}}</span> <br>
+            task config taskd.ca -- ca.cert.pem <br>
+            task config taskd.cert -- {{ me?.me?.username }}.cert.pem <br>
+            task config taskd.key -- {{ me?.me?.username }}.key.pem <br>
+            task config taskd.trust -- strict
+          </xmp>
+
           <button @click="downloadTaskwarriorKeys" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded">Download</button>
         </div>
 
@@ -21,6 +31,14 @@
           <textarea class="w-full mt-2 h-24 bg-gray-200 rounded-lg p-4 text-sm" placeholder="Paste your public key here" v-model="timewarriorKey">
           </textarea>
           <button @click="uploadKey" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 mt-4 rounded">Add</button>
+          <div class="mt-10 text-sm text-gray-600 max-w-sm">After adding your public key above, use following configuration in your timewsync.conf:</div>
+          <xmp class="mt-2 text-sm text-gray-600 bg-gray-200 rounded-lg p-4 max-w-xl overflow-x-auto">
+            [Server] <br>
+            BaseURL = https://timew.benciks.me <br>
+            <br>
+            [Client] <br>
+            UserID = <span class="font-bold">{{ me?.me?.timewId}}</span> <br>
+          </xmp>
         </div>
 
     </div>
@@ -31,11 +49,13 @@
 import { ref } from 'vue';
 import { useDownloadKeysMutation } from '@/gql/mutations/DownloadKeys';
 import { useUploadKeyMutation } from '@/gql/mutations/UploadKey';
+import { useMeQuery } from '@/gql/mutations/Me';
 
 const timewarriorKey = ref('');
 
 const { executeMutation: downloadKeysMutation } = useDownloadKeysMutation();
 const { executeMutation: uploadKeyMutation } = useUploadKeyMutation();
+const { data: me } = useMeQuery({});
 
 const downloadTaskwarriorKeys = async () => {
   const {data, error} = await downloadKeysMutation({});

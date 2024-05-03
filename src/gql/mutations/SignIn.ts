@@ -16,7 +16,7 @@ export type SignInMutation = (
     & Pick<Types.SignInPayload, 'token'>
     & { user: (
       { __typename?: 'User' }
-      & Pick<Types.User, 'id'>
+      & Pick<Types.User, 'id' | 'username' | 'timewId' | 'taskdUuid'>
     ) }
   ) }
 );
@@ -28,6 +28,9 @@ export const SignInDocument = gql`
     token
     user {
       id
+      username
+      timewId
+      taskdUuid
     }
   }
 }

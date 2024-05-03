@@ -22,12 +22,18 @@ export type Scalars = {
 export type Mutation = {
   __typename?: 'Mutation';
   createTask: Task;
+  deleteTask: Task;
   deleteTimeRecord: TimeRecord;
   downloadTaskKeys: Scalars['String']['output'];
+  editTask: Task;
+  markTaskDone: Task;
   modifyTimeRecordDate: TimeRecord;
+  setTimewHook: Scalars['Boolean']['output'];
   signIn: SignInPayload;
   signOut: Scalars['Boolean']['output'];
   signUp: SignInPayload;
+  startTask: Task;
+  stopTask: Task;
   tagTimeRecord: TimeRecord;
   timeStart: TimeRecord;
   timeStop: TimeRecord;
@@ -44,7 +50,30 @@ export type MutationCreateTaskArgs = {
 };
 
 
+export type MutationDeleteTaskArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
 export type MutationDeleteTimeRecordArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationEditTaskArgs = {
+  depends?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  description?: InputMaybe<Scalars['String']['input']>;
+  due?: InputMaybe<Scalars['String']['input']>;
+  id: Scalars['ID']['input'];
+  priority?: InputMaybe<Scalars['String']['input']>;
+  project?: InputMaybe<Scalars['String']['input']>;
+  recurring?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
+  until?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationMarkTaskDoneArgs = {
   id: Scalars['ID']['input'];
 };
 
@@ -53,6 +82,11 @@ export type MutationModifyTimeRecordDateArgs = {
   end?: InputMaybe<Scalars['String']['input']>;
   id: Scalars['ID']['input'];
   start?: InputMaybe<Scalars['String']['input']>;
+};
+
+
+export type MutationSetTimewHookArgs = {
+  enabled: Scalars['Boolean']['input'];
 };
 
 
@@ -65,6 +99,16 @@ export type MutationSignInArgs = {
 export type MutationSignUpArgs = {
   password: Scalars['String']['input'];
   username: Scalars['String']['input'];
+};
+
+
+export type MutationStartTaskArgs = {
+  id: Scalars['ID']['input'];
+};
+
+
+export type MutationStopTaskArgs = {
+  id: Scalars['ID']['input'];
 };
 
 
@@ -87,9 +131,16 @@ export type MutationUploadTimeWarriorKeyArgs = {
 export type Query = {
   __typename?: 'Query';
   me: User;
+  recentTaskProjects: Array<Scalars['String']['output']>;
+  recentTaskTags: Array<Scalars['String']['output']>;
   tasks: Array<Task>;
   timeRecords: Array<TimeRecord>;
   timeTags: Array<Scalars['String']['output']>;
+};
+
+
+export type QueryTasksArgs = {
+  filter?: InputMaybe<TaskFilter>;
 };
 
 export type SignInPayload = {
@@ -100,17 +151,31 @@ export type SignInPayload = {
 
 export type Task = {
   __typename?: 'Task';
+  depends: Array<Scalars['String']['output']>;
   description: Scalars['String']['output'];
   due: Scalars['String']['output'];
   entry: Scalars['String']['output'];
   id: Scalars['ID']['output'];
   modified: Scalars['String']['output'];
+  parent?: Maybe<Scalars['String']['output']>;
   priority: Scalars['String']['output'];
   project: Scalars['String']['output'];
+  recur?: Maybe<Scalars['String']['output']>;
+  start?: Maybe<Scalars['String']['output']>;
   status: Scalars['String']['output'];
   tags: Array<Scalars['String']['output']>;
+  until?: Maybe<Scalars['String']['output']>;
   urgency: Scalars['Float']['output'];
   uuid: Scalars['String']['output'];
+};
+
+export type TaskFilter = {
+  description?: InputMaybe<Scalars['String']['input']>;
+  due?: InputMaybe<Scalars['String']['input']>;
+  priority?: InputMaybe<Scalars['String']['input']>;
+  project?: InputMaybe<Scalars['String']['input']>;
+  status?: InputMaybe<Scalars['String']['input']>;
+  tags?: InputMaybe<Array<Scalars['String']['input']>>;
 };
 
 export type TimeRecord = {
@@ -123,9 +188,11 @@ export type TimeRecord = {
 
 export type User = {
   __typename?: 'User';
-  createdAt: Scalars['Time']['output'];
   id: Scalars['ID']['output'];
   password: Scalars['String']['output'];
+  taskdUuid: Scalars['String']['output'];
+  timewHook: Scalars['Boolean']['output'];
+  timewId: Scalars['String']['output'];
   username: Scalars['String']['output'];
 };
 
@@ -141,7 +208,9 @@ export type GraphCacheKeysConfig = {
 export type GraphCacheResolvers = {
   Query?: {
     me?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, WithTypename<User> | string>,
-    tasks?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<Task> | string>>,
+    recentTaskProjects?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<Scalars['String'] | string>>,
+    recentTaskTags?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<Scalars['String'] | string>>,
+    tasks?: GraphCacheResolver<WithTypename<Query>, QueryTasksArgs, Array<WithTypename<Task> | string>>,
     timeRecords?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<WithTypename<TimeRecord> | string>>,
     timeTags?: GraphCacheResolver<WithTypename<Query>, Record<string, never>, Array<Scalars['String'] | string>>
   },
@@ -150,15 +219,20 @@ export type GraphCacheResolvers = {
     user?: GraphCacheResolver<WithTypename<SignInPayload>, Record<string, never>, WithTypename<User> | string>
   },
   Task?: {
+    depends?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Array<Scalars['String'] | string>>,
     description?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     due?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     entry?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     id?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['ID'] | string>,
     modified?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
+    parent?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     priority?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     project?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
+    recur?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
+    start?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     status?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     tags?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Array<Scalars['String'] | string>>,
+    until?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>,
     urgency?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['Float'] | string>,
     uuid?: GraphCacheResolver<WithTypename<Task>, Record<string, never>, Scalars['String'] | string>
   },
@@ -169,21 +243,29 @@ export type GraphCacheResolvers = {
     tags?: GraphCacheResolver<WithTypename<TimeRecord>, Record<string, never>, Array<Scalars['String'] | string>>
   },
   User?: {
-    createdAt?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['Time'] | string>,
     id?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['ID'] | string>,
     password?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>,
+    taskdUuid?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>,
+    timewHook?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['Boolean'] | string>,
+    timewId?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>,
     username?: GraphCacheResolver<WithTypename<User>, Record<string, never>, Scalars['String'] | string>
   }
 };
 
 export type GraphCacheOptimisticUpdaters = {
   createTask?: GraphCacheOptimisticMutationResolver<MutationCreateTaskArgs, WithTypename<Task>>,
+  deleteTask?: GraphCacheOptimisticMutationResolver<MutationDeleteTaskArgs, WithTypename<Task>>,
   deleteTimeRecord?: GraphCacheOptimisticMutationResolver<MutationDeleteTimeRecordArgs, WithTypename<TimeRecord>>,
   downloadTaskKeys?: GraphCacheOptimisticMutationResolver<Record<string, never>, Scalars['String']>,
+  editTask?: GraphCacheOptimisticMutationResolver<MutationEditTaskArgs, WithTypename<Task>>,
+  markTaskDone?: GraphCacheOptimisticMutationResolver<MutationMarkTaskDoneArgs, WithTypename<Task>>,
   modifyTimeRecordDate?: GraphCacheOptimisticMutationResolver<MutationModifyTimeRecordDateArgs, WithTypename<TimeRecord>>,
+  setTimewHook?: GraphCacheOptimisticMutationResolver<MutationSetTimewHookArgs, Scalars['Boolean']>,
   signIn?: GraphCacheOptimisticMutationResolver<MutationSignInArgs, WithTypename<SignInPayload>>,
   signOut?: GraphCacheOptimisticMutationResolver<Record<string, never>, Scalars['Boolean']>,
   signUp?: GraphCacheOptimisticMutationResolver<MutationSignUpArgs, WithTypename<SignInPayload>>,
+  startTask?: GraphCacheOptimisticMutationResolver<MutationStartTaskArgs, WithTypename<Task>>,
+  stopTask?: GraphCacheOptimisticMutationResolver<MutationStopTaskArgs, WithTypename<Task>>,
   tagTimeRecord?: GraphCacheOptimisticMutationResolver<MutationTagTimeRecordArgs, WithTypename<TimeRecord>>,
   timeStart?: GraphCacheOptimisticMutationResolver<Record<string, never>, WithTypename<TimeRecord>>,
   timeStop?: GraphCacheOptimisticMutationResolver<Record<string, never>, WithTypename<TimeRecord>>,
@@ -194,18 +276,26 @@ export type GraphCacheOptimisticUpdaters = {
 export type GraphCacheUpdaters = {
   Query?: {
     me?: GraphCacheUpdateResolver<{ me: WithTypename<User> }, Record<string, never>>,
-    tasks?: GraphCacheUpdateResolver<{ tasks: Array<WithTypename<Task>> }, Record<string, never>>,
+    recentTaskProjects?: GraphCacheUpdateResolver<{ recentTaskProjects: Array<Scalars['String']> }, Record<string, never>>,
+    recentTaskTags?: GraphCacheUpdateResolver<{ recentTaskTags: Array<Scalars['String']> }, Record<string, never>>,
+    tasks?: GraphCacheUpdateResolver<{ tasks: Array<WithTypename<Task>> }, QueryTasksArgs>,
     timeRecords?: GraphCacheUpdateResolver<{ timeRecords: Array<WithTypename<TimeRecord>> }, Record<string, never>>,
     timeTags?: GraphCacheUpdateResolver<{ timeTags: Array<Scalars['String']> }, Record<string, never>>
   },
   Mutation?: {
     createTask?: GraphCacheUpdateResolver<{ createTask: WithTypename<Task> }, MutationCreateTaskArgs>,
+    deleteTask?: GraphCacheUpdateResolver<{ deleteTask: WithTypename<Task> }, MutationDeleteTaskArgs>,
     deleteTimeRecord?: GraphCacheUpdateResolver<{ deleteTimeRecord: WithTypename<TimeRecord> }, MutationDeleteTimeRecordArgs>,
     downloadTaskKeys?: GraphCacheUpdateResolver<{ downloadTaskKeys: Scalars['String'] }, Record<string, never>>,
+    editTask?: GraphCacheUpdateResolver<{ editTask: WithTypename<Task> }, MutationEditTaskArgs>,
+    markTaskDone?: GraphCacheUpdateResolver<{ markTaskDone: WithTypename<Task> }, MutationMarkTaskDoneArgs>,
     modifyTimeRecordDate?: GraphCacheUpdateResolver<{ modifyTimeRecordDate: WithTypename<TimeRecord> }, MutationModifyTimeRecordDateArgs>,
+    setTimewHook?: GraphCacheUpdateResolver<{ setTimewHook: Scalars['Boolean'] }, MutationSetTimewHookArgs>,
     signIn?: GraphCacheUpdateResolver<{ signIn: WithTypename<SignInPayload> }, MutationSignInArgs>,
     signOut?: GraphCacheUpdateResolver<{ signOut: Scalars['Boolean'] }, Record<string, never>>,
     signUp?: GraphCacheUpdateResolver<{ signUp: WithTypename<SignInPayload> }, MutationSignUpArgs>,
+    startTask?: GraphCacheUpdateResolver<{ startTask: WithTypename<Task> }, MutationStartTaskArgs>,
+    stopTask?: GraphCacheUpdateResolver<{ stopTask: WithTypename<Task> }, MutationStopTaskArgs>,
     tagTimeRecord?: GraphCacheUpdateResolver<{ tagTimeRecord: WithTypename<TimeRecord> }, MutationTagTimeRecordArgs>,
     timeStart?: GraphCacheUpdateResolver<{ timeStart: WithTypename<TimeRecord> }, Record<string, never>>,
     timeStop?: GraphCacheUpdateResolver<{ timeStop: WithTypename<TimeRecord> }, Record<string, never>>,
@@ -218,15 +308,20 @@ export type GraphCacheUpdaters = {
     user?: GraphCacheUpdateResolver<Maybe<WithTypename<SignInPayload>>, Record<string, never>>
   },
   Task?: {
+    depends?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     description?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     due?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     entry?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     id?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     modified?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
+    parent?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     priority?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     project?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
+    recur?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
+    start?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     status?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     tags?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
+    until?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     urgency?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>,
     uuid?: GraphCacheUpdateResolver<Maybe<WithTypename<Task>>, Record<string, never>>
   },
@@ -237,9 +332,11 @@ export type GraphCacheUpdaters = {
     tags?: GraphCacheUpdateResolver<Maybe<WithTypename<TimeRecord>>, Record<string, never>>
   },
   User?: {
-    createdAt?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>,
     id?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>,
     password?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>,
+    taskdUuid?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>,
+    timewHook?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>,
+    timewId?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>,
     username?: GraphCacheUpdateResolver<Maybe<WithTypename<User>>, Record<string, never>>
   },
 };

@@ -3,6 +3,9 @@ mutation SignIn($username: String!, $password: String!) {
     token
     user {
       id
+      username
+      timewId
+      taskdUuid
     }
   }
 }
