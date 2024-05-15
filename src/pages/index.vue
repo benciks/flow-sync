@@ -50,7 +50,6 @@ import { ref } from 'vue';
 import { useDownloadKeysMutation } from '@/gql/mutations/DownloadKeys';
 import { useUploadKeyMutation } from '@/gql/mutations/UploadKey';
 import { useMeQuery } from '@/gql/mutations/Me';
-import { time } from 'console';
 
 const timewarriorKey = ref('');
 const taskdServer = ref(import.meta.env.VITE_TASKD_SERVER);
