@@ -14,7 +14,7 @@
 
           <div class="mt-10 text-sm text-gray-600">Use following config in your taskwarrior client:</div>
           <xmp class="mt-2 text-sm text-gray-600 bg-gray-200 rounded-lg p-4 max-w-xl overflow-x-auto">
-            task config taskd.server -- benciks.me:53589 <br>
+            task config taskd.server -- {{ import.meta.env.VITE_TASKD_SERVER }}:53589 <br>
             task config taskd.credentials  -- <span class="font-bold">Public/{{ me?.me?.username }}/{{ me?.me?.taskdUuid}}</span> <br>
             task config taskd.ca -- ca.cert.pem <br>
             task config taskd.cert -- {{ me?.me?.username }}.cert.pem <br>
@@ -34,7 +34,7 @@
           <div class="mt-10 text-sm text-gray-600 max-w-sm">After adding your public key above, use following configuration in your timewsync.conf:</div>
           <xmp class="mt-2 text-sm text-gray-600 bg-gray-200 rounded-lg p-4 max-w-xl overflow-x-auto">
             [Server] <br>
-            BaseURL = https://timew.benciks.me <br>
+            BaseURL = {{ import.meta.env.VITE_TIMEW_SERVER }} <br>
             <br>
             [Client] <br>
             UserID = <span class="font-bold">{{ me?.me?.timewId}}</span> <br>

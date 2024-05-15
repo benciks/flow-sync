@@ -7,6 +7,8 @@ RUN npm install -g npm@9.7.1
 RUN npm install
 
 ARG VITE_API_URL="https://flow.benciks.me/query"
+ARG VITE_TASKD_SERVER="benciks.me"
+ARG VITE_TIMEW_SERVER="https://timew.benciks.me"
 
 COPY . .
 RUN npm run build

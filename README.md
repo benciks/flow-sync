@@ -1,20 +1,11 @@
 # flow-sync
+This is a simple web application that helps users of Timewarrior and Taskwarrior to sync their entries between existing instances and mobile application [Flow](https://github.com/benciks/flow-native). This project was built as part of bachelor thesis.
 
-This template should help get you started developing with Vue 3 in Vite.
-
-## Recommended IDE Setup
-
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur).
-
-## Type Support for `.vue` Imports in TS
-
-TypeScript cannot handle type information for `.vue` imports by default, so we replace the `tsc` CLI with `vue-tsc` for type checking. In editors, we need [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) to make the TypeScript language service aware of `.vue` types.
-
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+## Recommended Usage
+It is recommended to create a docker-compose file if you intend to run this project in production. This repository contains a Dockerfile that can be used, but it is important to note that the environment variables used in the Dockerfile are not meant to be used in production.
 
 ## Project Setup
+To develop locally, you need to have a running instance of the [Flow backend](https://github.com/benciks/flow-backend) running on your machine.
 
 ```sh
 npm install
@@ -37,4 +28,3 @@ npm run build
 ```sh
 npm run lint
 ```
-# flow-sync
