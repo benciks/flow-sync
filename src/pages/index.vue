@@ -17,7 +17,7 @@
             task config taskd.server -- {{ taskdServer }}:53589 <br>
             task config taskd.credentials  -- <span class="font-bold">Public/{{ me?.me?.username }}/{{ me?.me?.taskdUuid}}</span> <br>
             task config taskd.ca -- ca.cert.pem <br>
-            task config taskd.cert -- {{ me?.me?.username }}.cert.pem <br>
+            task config taskd.certificate -- {{ me?.me?.username }}.cert.pem <br>
             task config taskd.key -- {{ me?.me?.username }}.key.pem <br>
             task config taskd.trust -- strict
           </xmp>
